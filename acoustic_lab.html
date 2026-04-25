@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acoustic Lab — Strings & Organ Pipes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f5f5f0;
+            --bg-card: #ffffff;
+            --bg-secondary: #eaeae5;
+            --text-primary: #1a1a1a;
+            --text-secondary: #555555;
+            --text-muted: #888888;
+            --border: #d0d0cc;
+            --accent: #2d2d2d;
+            --accent-hover: #444444;
+            --input-bg: #fafaf8;
+            --input-border: #c8c8c4;
+            --highlight: #e8e8e4;
+            --danger: #8b4513;
+            --success: #2d5a27;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: var(--accent);
+            color: #fff;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 3px solid #1a1a1a;
+        }
+
+        .header h1 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .header .subtitle {
+            font-size: 0.75rem;
+            color: #aaa;
+            font-weight: 400;
+            letter-spacing: 0.1em;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 0;
+        }
+
+        .nav-tab {
+            padding: 0.6rem 1.5rem;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.15);
+            color: #aaa;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: all 0.2s;
+        }
+
+        .nav-tab:first-child {
+            border-radius: 2px 0 0 2px;
+        }
+
+        .nav-tab:last-child {
+            border-radius: 0 2px 2px 0;
+        }
+
+        .nav-tab.active {
+            background: #fff;
+            color: var(--accent);
+            border-color: #fff;
+        }
+
+        .nav-tab:hover:not(.active) {
+            background: rgba(255,255,255,0.08);
+            color: #ddd;
+        }
+
+        /* Main Layout */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 2px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: var(--bg-secondary);
+            padding: 0.8rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .card-header h2 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-primary);
+        }
+
+        .card-header .icon {
+            width: 20px;
+            height: 20px;
+            opacity: 0.6;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        /* Form Grid */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-secondary);
+        }
+
+        input, select {
+            padding: 0.65rem 0.8rem;
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: 2px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            transition: border-color 0.2s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .unit {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-left: 0.3rem;
+            font-weight: 400;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.7rem 1.5rem;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 2px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background: var(--accent-hover);
+        }
+
+        .btn-secondary {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--highlight);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+
+        /* Results */
+        .results {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 2px;
+            padding: 1.25rem 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .results h3 {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .result-row:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .result-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .result-value.highlight {
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        /* Info Panel */
+        .info-panel {
+            background: var(--bg-card);
+            border-left: 3px solid var(--accent);
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-panel h3 {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+        }
+
+        .info-panel p, .info-panel li {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .info-panel ul {
+            margin-left: 1.25rem;
+            margin-top: 0.5rem;
+        }
+
+        .info-panel li {
+            margin-bottom: 0.3rem;
+        }
+
+        .formula {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--bg-secondary);
+            padding: 0.2rem 0.5rem;
+            border-radius: 2px;
+            font-size: 0.8rem;
+            color: var(--text-primary);
+        }
+
+        /* Checkbox */
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.3rem;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--accent);
+        }
+
+        .checkbox-group label {
+            font-size: 0.85rem;
+            text-transform: none;
+            letter-spacing: normal;
+            font-weight: 400;
+            color: var(--text-primary);
+        }
+
+        /* Material presets */
+        .preset-row {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+
+        .preset-btn {
+            padding: 0.35rem 0.7rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 2px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-secondary);
+        }
+
+        .preset-btn:hover {
+            background: var(--highlight);
+            color: var(--text-primary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .main-container {
+                padding: 1rem;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Divider */
+        .divider {
+            height: 1px;
+            background: var(--border);
+            margin: 1.5rem 0;
+        }
+
+        /* Two column layout for info */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .note {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div>
+            <h1>Acoustic Lab</h1>
+            <div class="subtitle">Strings & Organ Pipes Calculator</div>
+        </div>
+        <nav class="nav-tabs">
+            <button class="nav-tab active" onclick="switchTab('strings')">Strings</button>
+            <button class="nav-tab" onclick="switchTab('pipes')">Organ Pipes</button>
+            <button class="nav-tab" onclick="switchTab('info')">Theory</button>
+        </nav>
+    </header>
+
+    <main class="main-container">
+        <!-- STRINGS SECTION -->
+        <section id="strings" class="section active">
+            <div class="info-panel">
+                <h3>String Acoustics</h3>
+                <p>A vibrating string produces sound through transverse standing waves. The fundamental frequency depends on tension, length, linear mass density, and boundary conditions. Wound strings increase mass without significantly increasing stiffness.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                    <h2>String Parameters</h2>
+                </div>
+                <div class="card-body">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Fundamental Frequency <span class="unit">(Hz)</span></label>
+                            <input type="number" id="str_freq" placeholder="e.g. 440" step="0.1">
+                        </div>
+                        <div class="form-group">
+                            <label>String Length <span class="unit">(m)</span></label>
+                            <input type="number" id="str_length" placeholder="e.g. 0.65" step="0.001">
+                        </div>
+                        <div class="form-group">
+                            <label>Core Material</label>
+                            <select id="str_material" onchange="updateStringDensity()">
+                                <option value="7850">Steel (music wire) — 7850 kg/m³</option>
+                                <option value="8930">Copper — 8930 kg/m³</option>
+                                <option value="2700">Aluminum — 2700 kg/m³</option>
+                                <option value="19300">Gold — 19300 kg/m³</option>
+                                <option value="21450">Platinum — 21450 kg/m³</option>
+                                <option value="10500">Silver — 10500 kg/m³</option>
+                                <option value="11400">Lead — 11400 kg/m³</option>
+                                <option value="custom">Custom Density</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Material Density <span class="unit">(kg/m³)</span></label>
+                            <input type="number" id="str_density" value="7850" step="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Core Diameter <span class="unit">(mm)</span></label>
+                            <input type="number" id="str_diameter" placeholder="e.g. 0.3" step="0.001">
+                        </div>
+                        <div class="form-group">
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="str_wound" onchange="toggleWound()">
+                                <label for="str_wound">Wound String</label>
+                            </div>
+                        </div>
+                        <div class="form-group" id="wound_diam_group" style="display:none;">
+                            <label>Outer Diameter (wound) <span class="unit">(mm)</span></label>
+                            <input type="number" id="str_wound_diameter" placeholder="e.g. 0.8" step="0.001">
+                        </div>
+                        <div class="form-group" id="wound_density_group" style="display:none;">
+                            <label>Winding Material Density <span class="unit">(kg/m³)</span></label>
+                            <select id="str_wound_material">
+                                <option value="8930">Copper — 8930 kg/m³</option>
+                                <option value="19300">Gold — 19300 kg/m³</option>
+                                <option value="2700">Aluminum — 2700 kg/m³</option>
+                                <option value="7850">Steel — 7850 kg/m³</option>
+                                <option value="11400">Lead — 11400 kg/m³</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn" onclick="calculateString()">Calculate</button>
+                        <button class="btn btn-secondary" onclick="clearString()">Clear</button>
+                    </div>
+
+                    <div class="results" id="str_results" style="display:none;">
+                        <h3>Results</h3>
+                        <div class="result-row">
+                            <span class="result-label">Linear Mass Density (μ)</span>
+                            <span class="result-value" id="res_mu">—</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Required Tension (T)</span>
+                            <span class="result-value highlight" id="res_tension">—</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">String Mass (total)</span>
+                            <span class="result-value" id="res_mass">—</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Cross-Sectional Area</span>
+                            <span class="result-value" id="res_area">—</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Breaking Tension (approx.)</span>
+                            <span class="result-value" id="res_break">—</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Safety Factor</span>
+                            <span class="result-value" id="res_safety">—</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Wave Speed (c)</span>
+                            <span class="result-value" id="res_speed">—</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Impedance (Z₀)</span>
+                            <span class="result-value" id="res_impedance">—</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ORGAN PIPES SECTION -->
+        <section id="pipes" class="section">
+            <div class="info-panel">
+                <h3>Organ Pipe Acoustics</h3>
+                <p>Organ pipes are resonant air columns. Their pitch depends on length, geometry, and end conditions. End correction accounts for the fact that the acoustic pressure node lies slightly beyond the physical pipe opening.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                    <h2>Pipe Parameters</h2>
+                </div>
+                <div class="card-body">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Desired Frequency <span class="unit">(Hz)</span></label>
+                            <input type="number" id="pipe_freq" placeholder="e.g. 261.63" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label>Geometry Type</label>
+                            <select id="pipe_geometry" onchange="updatePipeForm()">
+                                <option value="cyl_open">Cylindrical — Open/Open</option>
+                                <option value="cyl_closed">Cylindrical — Closed/Open</option>
+                                <option value="block_open">Block Flute — Open/Open</option>
+                                <option value="block_closed">Stopped Pipe — Closed/Open</option>
+                                <option value="conical">Conical — Open/Open</option>
+                                <option value="inv_conical">Inverse Conical — Open/Open</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Air Temperature <span class="unit">(°C)</span></label>
+                            <input type="number" id="pipe_temp" value="20" step="0.1">
+                        </div>
+                        <div class="form-group">
+                            <label>Pipe Diameter <span class="unit">(mm)</span></label>
+                            <input type="number" id="pipe_diameter" placeholder="e.g. 20" step="0.1">
+                        </div>
+                        <div class="form-group" id="conical_group" style="display:none;">
+                            <label>Small End Diameter <span class="unit">(mm)</span></label>
+                            <input type="number" id="pipe_small_diam" placeholder="e.g. 10" step="0.1">
+                        </div>
+                        <div class="form-group">
+                            <label>Wall Thickness <span class="unit">(mm)</span></label>
+                            <input type="number" id="pipe_wall" value="2" step="0.1">
+                        </div>
+                        <div class="form-group">
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="pipe_end_corr" checked>
+                                <label for="pipe_end_corr">Apply End Correction</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn" onclick="calculatePipe()">Calculate</button>
+                        <button class="btn btn-secondary" onclick="clearPipe()">Clear</button>
+                    </div>
+
+                    <div class="results" id="pipe_results" style="display:none;">
+                        <h3>Results</h3>
+                        <div class="result-row">
+                            <span class="result-label">Speed of Sound</span>
+                            <span class="result-value" id="res_snd_speed">—</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Physical Length</span>
+                            <span class="result-value highlight" id="res_length">—</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">End Correction (ΔL)</span>
+                            <span class="result-value" id="res_end_corr">—</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Acoustic Length</span>
+                            <span class="result-value" id="res_acoustic_len">—</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Wavelength (λ)</span>
+                            <span class="result-value" id="res_wavelength">—</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Cutoff Frequency (approx.)</span>
+                            <span class="result-value" id="res_cutoff">—</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Volume (internal)</span>
+                            <span class="result-value" id="res_volume">—</span>
+                        </div>
+                        <div class="result-row">
+                            <span class="result-label">Surface Area (internal)</span>
+                            <span class="result-value" id="res_surface">—</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- THEORY SECTION -->
+        <section id="info" class="section">
+            <div class="info-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>String Theory</h2>
+                    </div>
+                    <div class="card-body">
+                        <p style="font-size:0.85rem; color:var(--text-secondary); line-height:1.7; margin-bottom:1rem;">
+                            A stretched string under tension supports transverse waves. For a string fixed at both ends, standing waves form when the length equals integer multiples of half-wavelengths.
+                        </p>
+                        <h3 style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.08em; margin:1rem 0 0.5rem;">Fundamental Equation</h3>
+                        <p style="font-size:0.85rem; color:var(--text-secondary); line-height:1.7; margin-bottom:1rem;">
+                            <span class="formula">f₁ = (1/2L) · √(T/μ)</span>
+                        </p>
+                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:1rem;">
+                            where <span class="formula">T</span> = tension (N), <span class="formula">L</span> = length (m), <span class="formula">μ</span> = linear mass density (kg/m)
+                        </p>
+
+                        <h3 style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.08em; margin:1rem 0 0.5rem;">Linear Mass Density</h3>
+                        <p style="font-size:0.85rem; color:var(--text-secondary); line-height:1.7; margin-bottom:1rem;">
+                            For a solid cylindrical string:<br>
+                            <span class="formula">μ = ρ · π · (d/2)²</span>
+                        </p>
+                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:1rem;">
+                            where <span class="formula">ρ</span> = material density, <span class="formula">d</span> = diameter
+                        </p>
+
+                        <h3 style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.08em; margin:1rem 0 0.5rem;">Wound Strings</h3>
+                        <p style="font-size:0.85rem; color:var(--text-secondary); line-height:1.7; margin-bottom:1rem;">
+                            Wound strings consist of a core wire wrapped with a winding wire. The total linear density is the sum of core and winding contributions. This allows lower frequencies at practical tensions without excessive diameter.
+                        </p>
+
+                        <h3 style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.08em; margin:1rem 0 0.5rem;">Inharmonicity</h3>
+                        <p style="font-size:0.85rem; color:var(--text-secondary); line-height:1.7;">
+                            Real strings have stiffness, causing overtones to deviate from exact integer multiples. Thicker, stiffer strings exhibit more inharmonicity, which affects timbre and tuning.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Organ Pipe Theory</h2>
+                    </div>
+                    <div class="card-body">
+                        <p style="font-size:0.85rem; color:var(--text-secondary); line-height:1.7; margin-bottom:1rem;">
+                            An organ pipe is a resonant air column. Sound is produced by an air jet interacting with a sharp edge (labium), setting the air column into vibration.
+                        </p>
+
+                        <h3 style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.08em; margin:1rem 0 0.5rem;">Open Pipes</h3>
+                        <p style="font-size:0.85rem; color:var(--text-secondary); line-height:1.7; margin-bottom:1rem;">
+                            Both ends are pressure nodes (velocity antinodes). All harmonics are present.<br>
+                            <span class="formula">fₙ = n · c / 2Lₐ</span> &nbsp; for n = 1, 2, 3, ...
+                        </p>
+
+                        <h3 style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.08em; margin:1rem 0 0.5rem;">Closed (Stopped) Pipes</h3>
+                        <p style="font-size:0.85rem; color:var(--text-secondary); line-height:1.7; margin-bottom:1rem;">
+                            One end is a pressure antinode (closed), the other a node (open). Only odd harmonics.<br>
+                            <span class="formula">fₙ = n · c / 4Lₐ</span> &nbsp; for n = 1, 3, 5, ...
+                        </p>
+
+                        <h3 style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.08em; margin:1rem 0 0.5rem;">End Correction</h3>
+                        <p style="font-size:0.85rem; color:var(--text-secondary); line-height:1.7; margin-bottom:1rem;">
+                            The acoustic length <span class="formula">Lₐ</span> exceeds the physical length by an end correction <span class="formula">ΔL</span>:<br>
+                            <span class="formula">Lₐ = L + ΔL</span><br><br>
+                            For a circular open end:<br>
+                            <span class="formula">ΔL ≈ 0.6 · r = 0.3 · d</span>
+                        </p>
+                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:1rem;">
+                            where <span class="formula">r</span> = pipe radius, <span class="formula">d</span> = diameter. The factor varies with geometry and frequency.
+                        </p>
+
+                        <h3 style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.08em; margin:1rem 0 0.5rem;">Conical Pipes</h3>
+                        <p style="font-size:0.85rem; color:var(--text-secondary); line-height:1.7; margin-bottom:1rem;">
+                            Conical pipes support all harmonics like open cylindrical pipes but with different impedance characteristics. The taper affects radiation efficiency and timbre.
+                        </p>
+
+                        <h3 style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.08em; margin:1rem 0 0.5rem;">Speed of Sound in Air</h3>
+                        <p style="font-size:0.85rem; color:var(--text-secondary); line-height:1.7;">
+                            <span class="formula">c = 331.3 · √(1 + T/273.15)</span> m/s<br>
+                            where <span class="formula">T</span> = temperature in °C. At 20°C, c ≈ 343.2 m/s.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Tab switching
+        function switchTab(tab) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(tab).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // String material density update
+        function updateStringDensity() {
+            const sel = document.getElementById('str_material');
+            const val = sel.value;
+            if (val !== 'custom') {
+                document.getElementById('str_density').value = val;
+            }
+        }
+
+        // Toggle wound string fields
+        function toggleWound() {
+            const checked = document.getElementById('str_wound').checked;
+            document.getElementById('wound_diam_group').style.display = checked ? 'flex' : 'none';
+            document.getElementById('wound_density_group').style.display = checked ? 'flex' : 'none';
+        }
+
+        // Update pipe form based on geometry
+        function updatePipeForm() {
+            const geo = document.getElementById('pipe_geometry').value;
+            const conicalGroup = document.getElementById('conical_group');
+            if (geo === 'conical' || geo === 'inv_conical') {
+                conicalGroup.style.display = 'flex';
+            } else {
+                conicalGroup.style.display = 'none';
+            }
+        }
+
+        // Calculate String
+        function calculateString() {
+            const freq = parseFloat(document.getElementById('str_freq').value);
+            const length = parseFloat(document.getElementById('str_length').value);
+            const density = parseFloat(document.getElementById('str_density').value);
+            const diameter_mm = parseFloat(document.getElementById('str_diameter').value);
+            const isWound = document.getElementById('str_wound').checked;
+
+            if (!freq || !length || !density || !diameter_mm) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+
+            const diameter = diameter_mm / 1000; // m
+            const area = Math.PI * (diameter / 2) ** 2;
+            let mu = density * area; // kg/m
+            let totalArea = area;
+            let totalMass = mu * length;
+
+            // Wound string contribution
+            if (isWound) {
+                const woundDiamMm = parseFloat(document.getElementById('str_wound_diameter').value);
+                const woundDensity = parseFloat(document.getElementById('str_wound_material').value);
+                if (woundDiamMm) {
+                    const woundDiam = woundDiamMm / 1000;
+                    const woundArea = Math.PI * ((woundDiam / 2) ** 2 - (diameter / 2) ** 2);
+                    const muWound = woundDensity * woundArea;
+                    mu += muWound;
+                    totalArea = Math.PI * (woundDiam / 2) ** 2;
+                    totalMass = mu * length;
+                }
+            }
+
+            // Tension from f = (1/2L) * sqrt(T/μ)
+            // T = μ * (2Lf)²
+            const tension = mu * (2 * length * freq) ** 2;
+
+            // Approximate breaking tension (UTS for music wire ~2000 MPa)
+            const uts = 2e9; // Pa
+            const breakTension = uts * totalArea;
+            const safetyFactor = breakTension / tension;
+
+            // Wave speed
+            const waveSpeed = Math.sqrt(tension / mu);
+
+            // Characteristic impedance
+            const impedance = Math.sqrt(tension * mu);
+
+            // Display results
+            document.getElementById('res_mu').textContent = (mu * 1000).toFixed(4) + ' g/m';
+            document.getElementById('res_tension').textContent = tension.toFixed(2) + ' N (' + (tension / 9.80665).toFixed(2) + ' kgf)';
+            document.getElementById('res_mass').textContent = (totalMass * 1000).toFixed(4) + ' g';
+            document.getElementById('res_area').textContent = (totalArea * 1e6).toFixed(4) + ' mm²';
+            document.getElementById('res_break').textContent = breakTension.toFixed(2) + ' N';
+            document.getElementById('res_safety').textContent = safetyFactor.toFixed(2) + '×';
+            document.getElementById('res_speed').textContent = waveSpeed.toFixed(2) + ' m/s';
+            document.getElementById('res_impedance').textContent = impedance.toFixed(4) + ' kg/s';
+
+            document.getElementById('str_results').style.display = 'block';
+        }
+
+        function clearString() {
+            document.getElementById('str_freq').value = '';
+            document.getElementById('str_length').value = '';
+            document.getElementById('str_diameter').value = '';
+            document.getElementById('str_wound').checked = false;
+            document.getElementById('str_wound_diameter').value = '';
+            toggleWound();
+            document.getElementById('str_results').style.display = 'none';
+        }
+
+        // Calculate Pipe
+        function calculatePipe() {
+            const freq = parseFloat(document.getElementById('pipe_freq').value);
+            const temp = parseFloat(document.getElementById('pipe_temp').value);
+            const diameterMm = parseFloat(document.getElementById('pipe_diameter').value);
+            const wallMm = parseFloat(document.getElementById('pipe_wall').value);
+            const geometry = document.getElementById('pipe_geometry').value;
+            const applyEndCorr = document.getElementById('pipe_end_corr').checked;
+
+            if (!freq || !diameterMm) {
+                alert('Please fill in frequency and diameter.');
+                return;
+            }
+
+            // Speed of sound
+            const c = 331.3 * Math.sqrt(1 + temp / 273.15);
+
+            const diameter = diameterMm / 1000;
+            const radius = diameter / 2;
+            const wall = wallMm / 1000;
+
+            // End correction for circular open end
+            let endCorr = 0;
+            if (applyEndCorr) {
+                endCorr = 0.6 * radius; // Levine & Schwinger approx
+            }
+
+            // Determine mode factor and end conditions
+            let modeFactor, harmonicText;
+            let openEnds = 0;
+
+            switch(geometry) {
+                case 'cyl_open':
+                case 'block_open':
+                case 'conical':
+                case 'inv_conical':
+                    modeFactor = 2; // f = c / 2L
+                    openEnds = 2;
+                    harmonicText = 'All harmonics (n=1,2,3...)';
+                    break;
+                case 'cyl_closed':
+                case 'block_closed':
+                    modeFactor = 4; // f = c / 4L
+                    openEnds = 1;
+                    harmonicText = 'Odd harmonics only (n=1,3,5...)';
+                    break;
+            }
+
+            // Total end correction
+            const totalEndCorr = openEnds * endCorr;
+
+            // Acoustic length
+            const acousticLength = c / (modeFactor * freq);
+
+            // Physical length
+            const physicalLength = acousticLength - totalEndCorr;
+
+            // Wavelength
+            const wavelength = c / freq;
+
+            // Cutoff frequency (approximate for cylindrical pipe)
+            // f_c ≈ 1.84 * c / (2π * r) for first transverse mode
+            const cutoffFreq = 1.84 * c / (2 * Math.PI * radius);
+
+            // Volume and surface area
+            let volume, surfaceArea;
+
+            if (geometry === 'conical' || geometry === 'inv_conical') {
+                const smallDiamMm = parseFloat(document.getElementById('pipe_small_diam').value);
+                if (smallDiamMm) {
+                    const smallRadius = (smallDiamMm / 1000) / 2;
+                    const r1 = geometry === 'conical' ? radius : smallRadius;
+                    const r2 = geometry === 'conical' ? smallRadius : radius;
+                    const slant = Math.sqrt(physicalLength ** 2 + (r1 - r2) ** 2);
+                    volume = (1/3) * Math.PI * physicalLength * (r1 ** 2 + r1 * r2 + r2 ** 2);
+                    surfaceArea = Math.PI * (r1 + r2) * slant;
+                } else {
+                    volume = Math.PI * radius ** 2 * physicalLength;
+                    surfaceArea = 2 * Math.PI * radius * physicalLength;
+                }
+            } else {
+                volume = Math.PI * radius ** 2 * physicalLength;
+                surfaceArea = 2 * Math.PI * radius * physicalLength;
+            }
+
+            // Display results
+            document.getElementById('res_snd_speed').textContent = c.toFixed(2) + ' m/s';
+            document.getElementById('res_length').textContent = (physicalLength * 1000).toFixed(2) + ' mm (' + physicalLength.toFixed(4) + ' m)';
+            document.getElementById('res_end_corr').textContent = (totalEndCorr * 1000).toFixed(2) + ' mm';
+            document.getElementById('res_acoustic_len').textContent = (acousticLength * 1000).toFixed(2) + ' mm';
+            document.getElementById('res_wavelength').textContent = (wavelength * 1000).toFixed(2) + ' mm (' + wavelength.toFixed(4) + ' m)';
+            document.getElementById('res_cutoff').textContent = cutoffFreq.toFixed(2) + ' Hz';
+            document.getElementById('res_volume').textContent = (volume * 1e6).toFixed(2) + ' cm³';
+            document.getElementById('res_surface').textContent = (surfaceArea * 1e4).toFixed(2) + ' cm²';
+
+            document.getElementById('pipe_results').style.display = 'block';
+        }
+
+        function clearPipe() {
+            document.getElementById('pipe_freq').value = '';
+            document.getElementById('pipe_diameter').value = '';
+            document.getElementById('pipe_small_diam').value = '';
+            document.getElementById('pipe_results').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
